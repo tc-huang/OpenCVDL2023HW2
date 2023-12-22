@@ -15,6 +15,13 @@
 import cv2
 import argparse
 
+
+def dilate(gray):
+    pass
+
+def erode(gray):
+    pass
+
 def closing(image_path):
     image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
     # Binarize the grayscale image, assigning values of 0 or 255 only. (threshold = 127)

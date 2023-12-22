@@ -14,10 +14,7 @@
 
 import src.solutions.q2 as q2
 
-IMAGE_PATH = "data/raw/Dataset_OpenCvDl_Hw2/Q1/coins.jpg"
+IMAGE_PATH = "data/raw/Dataset_OpenCvDl_Hw2/Q2/histoEqualGray2.png"
 
-def test_draw_contour():
-    q1.draw_contour(IMAGE_PATH)
-
-def test_count_rings():
-    q1.count_rings(IMAGE_PATH)
+def test_histogram_equalization():
+    q2.histogram_equalization(IMAGE_PATH)
