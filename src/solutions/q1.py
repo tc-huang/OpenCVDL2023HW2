@@ -45,6 +45,7 @@ def draw_contour(image_path):
             # circle center image
             cv2.circle(circle_center_image, center, 1, (255, 255, 255), 3)  # Change color to white
     
+    cv2.destroyAllWindows() 
     cv2.imshow("image", image)
     cv2.imshow("processed_image", processed_image)
     cv2.imshow("circle_center_image", circle_center_image)
@@ -66,8 +67,7 @@ def count_rings(image_path):
     if circles is not None:
         circles = np.uint16(np.around(circles))
         circle_num = len(circles[0, :])
-        print(f"There are {circle_num} coins in the image.")
-    return circle_num 
+    return f"There are {circle_num} coins in the image."
 
 def main():
     parser = argparse.ArgumentParser()
@@ -77,9 +77,10 @@ def main():
     
     if args.image and args.index:
         image = args.image
-        if args.index == 0:
+        index = args.index
+        if index == "0":
             draw_contour(image)
-        elif args.index == 1:
+        elif index == "1":
             count_rings(image)
         else:
             print("Please specify the index of the question")

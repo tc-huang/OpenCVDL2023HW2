@@ -65,7 +65,15 @@ def histogram_equalization(image_path):
     
     plt.show()
 def main():
-    pass
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--image", type=str, default=None)
+    args = parser.parse_args()
+    
+    if args.image:
+        image = args.image
+        histogram_equalization(image) 
+    else:
+        print("Please specify the image path")
 
 if __name__ == "__main__":
     main()

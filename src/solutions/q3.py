@@ -13,14 +13,28 @@
 # limitations under the License.
 
 import cv2
+import numpy as np
 import argparse
 
 
 def dilate(gray):
-    pass
+    # structuring_element = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
+    height, width = gray.shape
+    dilation = np.zeros((height, width), np.uint8)
+    for i in range(height):
+        for j in range(width):
+            dilation[i, j] = np.max(gray[i:i+3, j:j+3])
+    return dilation
+            
 
 def erode(gray):
-    pass
+    # structuring_element = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
+    height, width = gray.shape
+    erosion = np.zeros((height, width), np.uint8)
+    for i in range(height):
+        for j in range(width):
+            erosion[i, j] = np.min(gray[i:i+3, j:j+3])
+    return erosion
 
 def closing(image_path):
     image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
@@ -28,11 +42,10 @@ def closing(image_path):
     ret, thresh = cv2.threshold(image, 127, 255, cv2.THRESH_BINARY)
     # Pad the image with zeros based on the kernel size (K=3)
     thresh = cv2.copyMakeBorder(thresh, 1, 1, 1, 1, cv2.BORDER_CONSTANT, value=0)
-    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
     # Perform dilation on the image
-    dilation = cv2.dilate(thresh, kernel, iterations=1)
+    dilation = dilate(thresh)
     # Perform erosion on the image
-    erosion = cv2.erode(dilation, kernel, iterations=1)
+    erosion = erode(dilation)
     # Show the result
     cv2.imshow("Original", image)
     cv2.imshow("Closing", erosion)
@@ -47,17 +60,33 @@ def opening(image_path):
     thresh = cv2.copyMakeBorder(thresh, 1, 1, 1, 1, cv2.BORDER_CONSTANT, value=0)
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
     # Perform erosion on the image
-    erosion = cv2.erode(thresh, kernel, iterations=1)
+    erosion = erode(thresh)
     # Perform dilation on the image
-    dilation = cv2.dilate(erosion, kernel, iterations=1)
+    dilation = dilate(erosion)
     # Show the result
+    cv2.destroyAllWindows()
     cv2.imshow("Original", image)
     cv2.imshow("Opening", dilation)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
 def main():
-    pass
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--image", type=str, default=None)
+    parser.add_argument("--index", type=str, default=None)
+    args = parser.parse_args()
+    
+    if args.image and args.index:
+        image = args.image
+        index = args.index
+        if index == "0":
+            closing(image)
+        elif index == "1":
+            opening(image)
+        else:
+            print("Please specify the index of the question")
+    else:
+        print("Please specify the image path")
 
 if __name__ == "__main__":
     main()
