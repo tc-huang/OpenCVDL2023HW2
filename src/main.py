@@ -2,10 +2,7 @@ import subprocess
 
 import gradio as gr
 import matplotlib.pyplot as plt
-# import torch
-# import torch.nn as nn
-# import torchvision
-# import torchvision.transforms as transforms
+from torchvision.datasets import MNIST
 from PIL import Image
 import numpy as np
 import cv2
@@ -92,6 +89,9 @@ data_transform = Compose(
         v2.Lambda(lambda x: x.repeat(3, 1, 1)),
     ]
 )
+mnist = MNIST(download=True, root=".", train=False)
+mnist255 = [data_transform(mnist[i][0]) for i in range(255)]
+del mnist
 
 def q4_1_show_model_structure():
     print("Call 4.1 Show the Structure of VGG19 with BN...")
@@ -105,15 +105,14 @@ def q4_2_show_accuracy_and_loss():
 def q4_3_predict(image):
     print("Call 4.3 Predict...")
     image = image['composite']
-    cv2.imwrite("composit.png", image)
-    image = data_transform(image).unsqueeze(0)
-    print(image.shape)
+    Image.fromarray(image).resize((28, 28))
+    
+    fake_batch = [data_transform(image)] + mnist255
+    fake_batch = torch.stack(fake_batch)
     with torch.no_grad():
-        logits = model_vgg19bn(image)
-    prediction = torch.softmax(logits, dim=1)
-    print(prediction)
-    result = torch.argmax(prediction, dim=1).item()
-    return f"{result}"
+        logits = model_vgg19bn(fake_batch)
+    predicted_label = logits.argmax(-1)[0].item()
+    return f"{predicted_label}"
 
 def q4_4_reset():
     print("Call 4.4 Reset...")
@@ -197,32 +196,33 @@ with gr.Blocks() as demo:
         # Q4
         with gr.Group():
             gr.Markdown("""## 4. MNIST Classifier Using VGG19""")
-            gr.Button("1. Show Model Structure").click(
-                fn=q4_1_show_model_structure, inputs=None, outputs=None
-            )
-            gr.Button("2. Show Accuracy and Loss").click(
-                fn=q4_2_show_accuracy_and_loss, inputs=None, outputs=None
-            )
-            gr.Button("3. Predict").click(fn=q4_3_predict, inputs=None, outputs=None)
-            gr.Button("4. Reset").click(fn=q4_4_reset, inputs=None, outputs=None)
-        
-        with gr.Group():
-            draw = gr.Sketchpad(
-                brush=gr.Brush(
-                    colors=["#FFFFFF"],
-                    color_mode="fixed"
-                ),
-                crop_size="1:1",
-                eraser=False,
-                image_mode='L'
-            )
-            
-            io = gr.Interface(fn=q4_3_predict,inputs=draw, outputs="text",live=True)
+            with gr.Row():
+                with gr.Column():
+                    gr.Button("1. Show Model Structure").click(
+                        fn=q4_1_show_model_structure, inputs=None, outputs=None
+                    )
+                    gr.Button("2. Show Accuracy and Loss").click(
+                        fn=q4_2_show_accuracy_and_loss, inputs=None, outputs=None
+                    )
+                    gr.Button("3. Predict").click(fn=q4_3_predict, inputs=None, outputs=None)
+                    gr.Button("4. Reset").click(fn=q4_4_reset, inputs=None, outputs=None)
+
+                with gr.Column():
+                    draw = gr.Sketchpad(
+                        brush=gr.Brush(
+                            colors=["#FFFFFF"],
+                            color_mode="fixed"
+                        ),
+                        crop_size="1:1",
+                        eraser=False,
+                        image_mode='L'
+                    )
+                    io = gr.Interface(fn=q4_3_predict,inputs=draw, outputs="text",live=True)
 
     # Q5
-    with gr.Row():
-        with gr.Group():
-            gr.Markdown("## 5. ResNet50")
+    with gr.Group():
+        gr.Markdown("## 5. ResNet50")
+        with gr.Row():
             q5_image = gr.File(label="Load Image")
             with gr.Row():
                 with gr.Column():
