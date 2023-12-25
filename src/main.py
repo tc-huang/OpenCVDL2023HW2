@@ -1,5 +1,5 @@
 import subprocess
-
+from pathlib import Path
 import gradio as gr
 import matplotlib.pyplot as plt
 from torchvision.datasets import MNIST
@@ -19,7 +19,7 @@ def q1_1_draw_contour(image):
     if image:
         image = image.name
         print("Call 1.1 Draw contour...")
-        subprocess.run(["python", "src/solutions/q1.py", "--image", image, "--index", "0"])
+        subprocess.run(["python", str(Path(__file__).parent / "solutions/q1.py"), "--image", image, "--index", "0"])
     else:
         print("Please load a image")
 
@@ -52,7 +52,7 @@ def q2_histogram_equalization(image):
         image = image.name
         print("Call 2. Histogram Equalization...")
         subprocess.run(
-            ["python", "src/solutions/q2.py", "--image", image]
+            ["python", str(Path(__file__).parent / "solutions/q2.py"), "--image", image]
         )
     else:
         print("Please load a image")
@@ -62,7 +62,7 @@ def q3_1_closing(image):
     if image:
         image = image.name
         print("Call 3.1 Closing...")
-        subprocess.run(["python", "src/solutions/q3.py", "--image", image, "--index", "0"])
+        subprocess.run(["python", str(Path(__file__).parent / "solutions/q3.py"), "--image", image, "--index", "0"])
     else:
         print("Please load an image")
 
@@ -70,7 +70,7 @@ def q3_1_opening(image):
     if image:
         image = image.name
         print("Call 3.2 Opening...")
-        subprocess.run(["python", "src/solutions/q3.py", "--image", image, "--index", "1"])
+        subprocess.run(["python", str(Path(__file__).parent / "solutions/q3.py"), "--image", image, "--index", "1"])
     else:
         print("Please load an image")
 
@@ -78,7 +78,7 @@ def q3_1_opening(image):
 model_vgg19bn = timm.create_model(
         "vgg19_bn",
         # pretrained=False,
-        checkpoint_path="/Users/tchuang/GitHub/OpenCVDL2023HW2/src/solutions/q4/results/checkpoint/best_model_28_accuracy=0.9398.pt",
+        checkpoint_path=str(Path(__file__).parent / "model/MNIST/checkpoint/best_model_28_accuracy=0.9398.pt"),
         num_classes=10
     )
 data_transform = Compose(
@@ -99,7 +99,7 @@ def q4_1_show_model_structure():
 
 def q4_2_show_accuracy_and_loss():
     print("Call Show Training/Validating Accuracy and Loss...")
-    subprocess.run(["python", "./src/q4.py", "--index", "2"])
+    subprocess.run(["python", str(Path(__file__).parent / "solutions/q4.py"), "--index", "2"])
 
 
 def q4_3_predict(image):
@@ -121,7 +121,7 @@ def q4_4_reset():
 
 # Q5
 image_processor = ConvNextImageProcessor.from_pretrained("microsoft/resnet-50")
-check_point = "/Users/tchuang/GitHub/OpenCVDL2023HW2/src/solutions/q5/results/detr-resnet-50_2023-12-23_17:11:43/checkpoint-2535"
+check_point = str(Path(__file__).parent / "model/with/detr-resnet-50_2023-12-24_13:45:46_best1")
 model = ResNetForImageClassification.from_pretrained(
     check_point,
     ignore_mismatched_sizes=True,
@@ -131,7 +131,7 @@ model.classifier.add_module("2", nn.Sigmoid())
 
 def q5_1_show_images():
     print("Call 5.1 Load the dataset and resize images...")
-    subprocess.run(["python", "src/solutions/q5.py", "--index", "1"])
+    subprocess.run(["python", str(Path(__file__).parent /"solutions/q5.py"), "--index", "1"])
 
 
 def q5_2_show_model_structure():
@@ -140,7 +140,7 @@ def q5_2_show_model_structure():
 
 def q5_3_show_comparasion():
     print("Call 5.3 Show Acc and Loss...")
-    subprocess.run(["python", "src/solutions/q5.py", "--index", "3"])
+    subprocess.run(["python", str(Path(__file__).parent /"solutions/q5.py"), "--index", "3"])
 
 def q5_4_inference(image): 
     if image:

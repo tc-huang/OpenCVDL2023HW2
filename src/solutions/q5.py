@@ -16,9 +16,11 @@ import argparse
 import glob
 from PIL import Image
 import matplotlib.pyplot as plt
+from pathlib import Path
 
 def show_images():
-    inference_dataset_path = "data/raw/dataset/inference_dataset"
+    inference_dataset_path = Path(__file__).parent.parent / "inference_dataset"
+    print(inference_dataset_path)
     cat_dir_path = f"{inference_dataset_path}/Cat"
     dog_dir_path = f"{inference_dataset_path}/Dog"
     cat_image_paths = glob.glob(f"{cat_dir_path}/*")
@@ -36,7 +38,8 @@ def show_images():
     plt.show()
 
 def show_comparasion():
-    figure_path = "src/solutions/accuracy_comparision.png"
+    figure_path = Path(__file__).parent / "accuracy_comparision.png"
+    print(figure_path)
     figure = Image.open(figure_path)
     figure.show()
 
