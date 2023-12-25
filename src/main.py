@@ -112,6 +112,13 @@ def q4_3_predict(image):
     with torch.no_grad():
         logits = model_vgg19bn(fake_batch)
     predicted_label = logits.argmax(-1)[0].item()
+    print(f"logits: {logits.shape}")
+    softmax = nn.Softmax(dim=1)
+    probs = softmax(logits)[0].tolist()
+    # print(f"probabilities: {probs}")
+    probs = str(probs)[1:-1].replace(",", ""). replace("'", "")
+    subprocess.run(["python", str(Path(__file__).parent / "solutions/q4.py"), "--index", "3", "--probs", probs]) 
+    
     return f"{predicted_label}"
 
 def q4_4_reset():

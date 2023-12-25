@@ -50,7 +50,7 @@ def main():
     
     if args.index:
         index = args.index
-        if index == "1":
+        if index == "2":
             show_images()
         elif index == "3":
             show_comparasion()
