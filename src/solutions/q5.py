@@ -25,8 +25,8 @@ def show_images():
     dog_dir_path = f"{inference_dataset_path}/Dog"
     cat_image_paths = glob.glob(f"{cat_dir_path}/*")
     dog_image_paths = glob.glob(f"{dog_dir_path}/*")
-    cat_image = Image.open(cat_image_paths[0])
-    dog_image = Image.open(dog_image_paths[0])
+    cat_image = Image.open(cat_image_paths[0]).resize((224, 224))
+    dog_image = Image.open(dog_image_paths[0]).resize((224, 224))
     plt.subplot(1, 2, 1)
     plt.axis('off')
     plt.imshow(cat_image)
